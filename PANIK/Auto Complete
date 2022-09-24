@@ -1,0 +1,276 @@
+-- Necessary Tables
+
+local Areas = {
+ ["Fruit"] = CFrame.new(-272.607697, 3.69999862, -322.842499, 0.998629808, 2.27592647e-08, -0.0523306541, -2.67512412e-08, 1, -7.55832801e-08, 0.0523306541, 7.68796227e-08, 0.998629808),
+ ["FrozenFood"] = CFrame.new(-91.8090515, 3.69999862, -222.293457, 0.219460726, 2.24580852e-08, -0.975621343, 7.4533606e-09, 1, 2.46958578e-08, 0.975621343, -1.26914284e-08, 0.219460726),
+ ["NormalFood"] = CFrame.new(-224.65567, 3.69999886, -178.187912, 0.060422346, -3.99906313e-08, -0.998172879, -1.56419784e-08, 1, -4.10106864e-08, 0.998172879, 1.80913595e-08, 0.060422346),
+ ["Safe"] = CFrame.new()
+}
+
+local ItemsTable = {
+ ["FrozenFood"] = {
+    "Butter",
+    "Chicken",
+    "Steak",
+    "Milk",
+    "Cheese",
+    "Yogurt",
+    "Fruit Cup",
+    "Ice Cream",
+    "Frozen Pizza",
+    "Sausage Link",
+    "Ice Cream Sandwich"
+ },
+ ["Fruit"] = {
+    "Corn",
+    "Pear",
+    "Onion",
+    "Lemon",
+    "Apple",
+    "Grapes",
+    "Potato",
+    "Carrot",
+    "Banana",
+    "Cabbage",
+    "Pumpkin",
+    "Avocado",
+    "Mushroom",
+    "Broccoli",
+    "Asparagus",
+    "Raspberry",
+    "Pineapple",
+    "Watermelon"
+ }
+}
+
+-- Scripting
+
+local Scanners = workspace:WaitForChild("Scanners")
+local Escapes = workspace:WaitForChild("Trapdoors")
+local Items = workspace:WaitForChild("Items")
+
+local Count = 0
+local Current = 1
+
+if #Scanners:GetChildren() == 0 then
+    Scanners.ChildAdded:Connect(function(Scanner)
+        Count = Count + 1
+        Scanner.Name = "Scanner " .. Count
+    end)
+else
+   for i, v in pairs(Scanners:GetChildren()) do
+      v.Name = "Scanner " .. tostring(i)
+   end
+end
+
+repeat wait() until #Scanners:GetChildren() == 3
+
+local Checking = false
+local Doing = false
+local SetLoopTP = nil
+
+local AttemptTP = function(CFrame)
+   if game.Players.LocalPlayer.Character then
+      if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+         game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame
+      end
+   end
+end
+
+local GetItems = function(Scanner)
+   if Scanner:FindFirstChild("Scanner") then
+      local ScannerPart = Scanner:FindFirstChild("Scanner")
+      
+      if ScannerPart:FindFirstChild("Set") then
+         return {ScannerPart:FindFirstChild("Set")["1"].Value, ScannerPart:FindFirstChild("Set")["2"].Value, ScannerPart:FindFirstChild("Set")["3"].Value}
+      end
+   end
+end
+
+local GrabItem = function(String)
+   print("Searching For " .. String)
+   if not Items:FindFirstChild(String) then
+      for i, v in pairs(ItemsTable["FrozenFood"]) do
+         if String == v then
+            SetLoopTP = "FrozenFood"
+         end
+      end
+      
+      for i, v in pairs(ItemsTable["Fruit"]) do
+         if String == v then
+            SetLoopTP = "Fruit"
+         end
+      end
+      
+      if SetLoopTP == "" or SetLoopTP == nil then
+         SetLoopTP = "NormalFood"
+      end
+      
+      local FindYield = 0
+
+      repeat wait() 
+          FindYield = FindYield + 1 
+      until Items:FindFirstChild(String) or FindYield > 350
+     
+      if FindYield > 350 then
+         
+         SetLoopTP = nil
+         
+         return false
+      end
+      
+      local Item = Items:FindFirstChild(String)
+      local ProximityPrompt;
+      
+      for i, v in pairs(Item:GetDescendants()) do
+         if v:IsA("ProximityPrompt") then 
+            ProximityPrompt = v
+         end
+      end
+      
+      local Yield = 0
+      
+      repeat wait()
+          if Item ~= nil and ProximityPrompt.Parent ~= nil then
+              AttemptTP(ProximityPrompt.Parent.CFrame)
+              fireproximityprompt(ProximityPrompt, 0)
+              Yield = Yield + 1
+          end
+      until ProximityPrompt.Parent == nil or Yield > 350
+      
+      SetLoopTP = nil
+      warn("Complete", String, Yield, Item)
+   else
+      local Item = Items:FindFirstChild(String)
+      local ProximityPrompt;
+      
+      for i, v in pairs(Item:GetDescendants()) do
+         if v:IsA("ProximityPrompt") then 
+            ProximityPrompt = v
+         end
+      end
+      
+      local Yield = 0
+      
+      repeat wait()
+          if Item ~= nil and ProximityPrompt.Parent ~= nil then
+              AttemptTP(ProximityPrompt.Parent.CFrame)
+              fireproximityprompt(ProximityPrompt, 0)
+              Yield = Yield + 1
+          end
+      until ProximityPrompt.Parent == nil or Yield > 350
+      
+      warn("Complete", String, Yield, Item)
+   end
+end
+
+local CompleteScanner = function(Scanner)
+   if Scanner:FindFirstChild("Scanner") then
+     
+      local ScannerPart = Scanner:FindFirstChild("Scanner")
+      local ProximityPrompt;
+      local Complete;
+      
+      if ScannerPart:FindFirstChild("ProximityPrompt") then
+         ProximityPrompt = ScannerPart:FindFirstChild("ProximityPrompt")
+      end
+      
+      if ScannerPart:FindFirstChild("LocalCompleted") then
+         Complete = ScannerPart:FindFirstChild("LocalCompleted")
+      end
+      
+      if ProximityPrompt ~= nil and Complete ~= nil then
+         if Complete.Value then
+            return
+         else
+            local ScannerYield = 0
+            
+            repeat wait() 
+                AttemptTP(ScannerPart.CFrame * CFrame.new(0,5,0))
+                fireproximityprompt(ProximityPrompt, 0)
+                ScannerYield = ScannerYield + 1
+            until Complete.Value or Scanner == nil or ScannerYield > 100
+         end
+      end
+   end
+end
+
+local Escape = function()
+   repeat wait() until Escapes:FindFirstChild("EscapeHatch")
+   
+   local Hatch = Escapes:FindFirstChild("EscapeHatch")
+   
+   if Hatch:FindFirstChild("EscapePart") then
+      local Part = Hatch:FindFirstChild("EscapePart")
+      
+      if Part:FindFirstChild("Prompt") then
+         
+         local ProxPrompt = Part:FindFirstChild("Prompt")
+         
+         repeat wait()
+             AttemptTP(ProxPrompt.Parent.CFrame)
+             fireproximityprompt(ProxPrompt, 0)
+         until EscapeYield > 100 or ProxPrompt.Parent == nil
+      end
+   end
+end
+
+game:GetService("RunService").RenderStepped:Connect(function(...)
+    if (Scanners:FindFirstChild("Scanner " .. tostring(Current)) and not Checking and not Doing) or Current == 4 then
+       Checking = true
+       
+       if Current == 4 then
+          print("Attempting to escape :D")
+          Escape()
+          
+          return
+       end
+       
+       if Current ~= 0 and Current ~= 4 then
+          Doing = true
+          
+          local Items = GetItems(Scanners:FindFirstChild("Scanner " .. tostring(Current)))
+          
+          for i, v in pairs(Items) do
+             if v ~= nil then 
+                local Item = GrabItem(v.Name)
+                
+                if Item == false then
+                   ErrorOccured = true
+                end
+             end
+          end
+          
+          if ErrorOccured then
+             game:GetService("StarterGui"):SetCore("SendNotification", {
+               Title = "ERROR",
+               Text = "Something went wrong? Sorry!",
+               Duration = 5
+             })
+          else
+             CompleteScanner(Scanners:FindFirstChild("Scanner " .. tostring(Current)))
+          end
+          
+          Current = Current + 1
+          Doing = false
+          wait(.7)
+          Checking = false
+       end
+       
+       Checking = false
+    end
+    
+    if not Scanners:FindFirstChild("Scanner " .. tostring(Current)) and Current ~= 4 then
+       warn("Can't Find Scanner", Current, "???")
+    end
+    
+    if SetLoopTP ~= nil then
+       AttemptTP(Areas[SetLoopTP])
+    end
+end)
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+   Title = "SUCCESS",
+   Text = "LOADED! HAVE FUN :)",
+   Duration = 10
+})
