@@ -17,7 +17,7 @@ if game.PlaceId == (5208655184) then
    
    local AssociatedBankerPart = nil
    local Thrown = Workspace:WaitForChild("Thrown")
-   local Hook = "https://discord.com/api/webhooks/972632738672803871/GD_azOh9sry4F_CzSrBKqJ7Os-EUT_TRDAd6qlkmP8NVjQmwMrDUcZq25vfbufdhoCD5"
+   local Hook = ""
    
    local Artifacts = {
     ["Lannis's Amulet"] = false,
@@ -48,7 +48,6 @@ if game.PlaceId == (5208655184) then
             local RealPos = Vector3.new(math.floor(Position.X), math.floor(Position.Y), math.floor(Position.Z))
             local RootPos = Vector3.new(math.floor(Root.Position.X), math.floor(Root.Position.Y), math.floor(Root.Position.Z))
             if RootPos == RealPos then
-                x.Name = (NewName .. " Banker")
                 Returns = Root
             end
         end
@@ -190,6 +189,7 @@ if game.PlaceId == (5208655184) then
    local RunSnakerBot = function()
       local Function = function(i, x)
          if x.Name == "ToolBag" and not x:FindFirstChild("Collection") then
+            print(x, AssociatedBankerPart)
             local Valid = ValidAndSelected(x.BillboardGui.Tool.Text)
             local DCheck,Distance = DistanceCheck(x, AssociatedBankerPart, 150)
 
@@ -231,6 +231,15 @@ if game.PlaceId == (5208655184) then
          end
          if table.find(_G.Settings["Shore"], Client.UserId) then
             table.insert(Bankers["Shore"].Assigned, Client.UserId)
+         end
+         if _G.Settings["Artifacts"] ~= nil then
+            for i, v in pairs(_G.Settings["Artifacts"]) do
+               Artifacts[i] = v
+               warn("Custom Artifact:", i, "\nSet:", tostring(v))
+            end
+         end
+         if _G.Settings["Hook"] ~= nil then
+            Hook = tostring(_G.Settings["Hook"])    
          end
       end
       return true
