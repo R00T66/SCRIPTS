@@ -279,13 +279,15 @@ if game.PlaceId == (5208655184) then
                    _G.Settings["GameVolume"] = 0
                 end
                 
+                _G.Settings["GameVolume"] = (_G.Settings["GameVolume"] / 10)
+                
                 repeat wait()
                   GameVolume_Yield = GameVolume_Yield + 1
                   UserSettings():GetService("UserGameSettings").MasterVolume = _G.Settings["GameVolume"]
                 until GameVolume_Yield > 99
             end)
             coroutine.resume(Thread)
-            warn("Attempting Sound Volume")
+            warn("Attempting Game Volume", _G.Settings["GameVolume"])
          end
       end
       return true
