@@ -212,6 +212,7 @@ if game.PlaceId == (5208655184) then
    local SetupGlobalSettings = function()
       if _G.Settings ~= nil then
          if table.find(_G.Settings["Blacklist"], Client.UserId) then
+            warn("User blacklisted from usage")
             return false
          end
          if table.find(_G.Settings["Desert"], Client.UserId) then
