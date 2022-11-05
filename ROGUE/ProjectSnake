@@ -345,3 +345,15 @@ if game.PlaceId == (5208655184) then
    
    SetupScript()
 end
+
+wait(10)
+
+if getconnections then
+    for _, v in next, getconnections(game:GetService("Players").LocalPlayer.Idled) do
+        v:Disable()
+    end
+end
+
+Client.Idled:connect(function()
+    game:GetService("VirtualUser"):ClickButton2(Vector2.new())
+end)
