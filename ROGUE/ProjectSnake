@@ -349,7 +349,7 @@ end
 wait(10)
 
 if getconnections then
-    for _, v in next, getconnections(game:GetService("Players").LocalPlayer.Idled) do
+    for _, v in next, getconnections(Client.Idled) do
         v:Disable()
     end
 end
