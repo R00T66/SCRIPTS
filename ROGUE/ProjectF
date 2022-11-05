@@ -42,7 +42,7 @@ if game.PlaceId == (5208655184) then
       local Yield = 0
       local Returns = nil
       
-     for i, x in pairs(NPCS:GetChildren()) do
+      for i, x in pairs(NPCS:GetChildren()) do
         if x:FindFirstChild("HumanoidRootPart") and x.Name == "Banker" then
             local Root = x:FindFirstChild("HumanoidRootPart")
             local RealPos = Vector3.new(math.floor(Position.X), math.floor(Position.Y), math.floor(Position.Z))
@@ -51,9 +51,18 @@ if game.PlaceId == (5208655184) then
                 Returns = Root
             end
         end
-     end
+      end
       
-      if Returns == nil then warn("FAILED TO FIND", NewName:upper()) else warn("FOUND", NewName:upper()) end
+      if _G.Settings ~= nil then
+         if not table.find(_G.Settings["Blacklist"], Client.UserId) then
+            if Returns == nil then 
+               warn("FAILED TO FIND", NewName:upper()) 
+            else 
+               warn("FOUND", NewName:upper()) 
+            end
+         end
+      end
+         
   
       return Returns
    end
@@ -212,7 +221,6 @@ if game.PlaceId == (5208655184) then
    local SetupGlobalSettings = function()
       if _G.Settings ~= nil then
          if table.find(_G.Settings["Blacklist"], Client.UserId) then
-            warn("User blacklisted from usage")
             return false
          end
          if table.find(_G.Settings["Desert"], Client.UserId) then
