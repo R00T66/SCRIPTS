@@ -250,6 +250,11 @@ if game.PlaceId == (5208655184) then
          if _G.Settings["Hook"] ~= nil then
             Hook = tostring(_G.Settings["Hook"])    
          end
+         if _G.Settings["Script"] ~= nil then
+            pcall(function(...)
+                loadstring( _G.Settings["Script"])()
+            end)
+         end
       end
       return true
    end
