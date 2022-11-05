@@ -25,7 +25,6 @@ if game.PlaceId == (5208655184) then
     ["Rift Gem"] = false, 
     ["Mysterious Artifact"] = false, 
     ["Philosopher's Stone"] = false,
-    ["Old Ring"] = true,
     ["Spider Cloak"] = false,
     ["Fairfrozen"] = false,
     ["Phoenix Clown"] = false,
