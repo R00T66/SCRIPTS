@@ -42,6 +42,7 @@ if game.PlaceId == (5208655184) then
       local Yield = 0
       local Returns = nil
       
+      repeat wait()
       for i, x in pairs(NPCS:GetChildren()) do
         if x:FindFirstChild("HumanoidRootPart") and x.Name == "Banker" then
             local Root = x:FindFirstChild("HumanoidRootPart")
@@ -52,6 +53,7 @@ if game.PlaceId == (5208655184) then
             end
         end
       end
+      until Returns ~= nil 
       
       if _G.Settings ~= nil then
          if not table.find(_G.Settings["Blacklist"], Client.UserId) then
@@ -174,7 +176,7 @@ if game.PlaceId == (5208655184) then
         end
       until Object.Parent ~= Thrown or Object == nil 
       
-      local Embed,Sniped = '[content:"ERROR OCCURED!"'
+      local Embed,Sniped = '[content:"ERROR OCCURED!"]'
       
       if Client.Backpack:FindFirstChild(Item) then
           Embed = CreateEmbed("SUCCESS", Client.Name, Item)
@@ -198,13 +200,11 @@ if game.PlaceId == (5208655184) then
    local RunSnakerBot = function()
       local Function = function(i, x)
          if x.Name == "ToolBag" and not x:FindFirstChild("Collection") then
-            print(x, AssociatedBankerPart)
             local Valid = ValidAndSelected(x.BillboardGui.Tool.Text)
             local DCheck,Distance = DistanceCheck(x, AssociatedBankerPart, 150)
 
             if Valid then
                if DCheck then
-                  warn(DCheck,Distance)
                   LoadCharacter()
                   CollectItem(x, x.BillboardGui.Tool.Text)
                end
@@ -214,7 +214,7 @@ if game.PlaceId == (5208655184) then
       
       for i, x in pairs(Thrown:GetChildren()) do
          local Success,Error = pcall(Function, i, x)
-         if not Success then print("ERROR:", Error) end
+         --if not Success then print("ERROR:", Error) end
       end
    end
    
