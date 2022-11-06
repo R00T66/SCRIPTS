@@ -348,6 +348,8 @@ end
 
 wait(10)
 
+Client = game.Players.LocalPlayer
+
 if getconnections then
     for _, v in next, getconnections(Client.Idled) do
         v:Disable()
