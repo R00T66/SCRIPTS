@@ -194,7 +194,7 @@ if game.PlaceId == (5208655184) then
           Embed = CreateEmbed("SUCCESS", Client.Name, Item, Nearest)
           Sniped = true
      else
-          Embed = CreateEmbed("ERROR", Client.Name, Item, Nearest
+          Embed = CreateEmbed("ERROR", Client.Name, Item, Nearest)
           Sniped = false
       end
       
