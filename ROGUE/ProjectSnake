@@ -120,11 +120,6 @@ if game.PlaceId == (5208655184) then
       end
    end
    
-   local SimulateTouch = function(Object, BasePart)
-      firetouchinterest(Object, BasePart, 0)
-      firetouchinterest(Object, BasePart, 1)
-   end
-   
    local LoadCharacter = function()
       if Client.PlayerGui:FindFirstChild("StartMenu") then
          Client.PlayerGui:FindFirstChild("StartMenu").Finish:FireServer()
@@ -141,7 +136,12 @@ if game.PlaceId == (5208655184) then
           })
       end)
    end
-   local CreateEmbed = function(Status, Account, Artifact) 
+   
+   local CreateEmbed = function(Status, Account, Artifact, DropLocation)
+      if DropLocation == nil then
+         DropLocation = "NON-BANKER"
+      end     
+      
       local Embed_Data = {
        content = nil,
        embeds = {{
@@ -157,7 +157,7 @@ if game.PlaceId == (5208655184) then
       if Status == "ERROR" then
          Embed_Data.embeds[1].description = ("====================================\nALMOST GOT IT THIS TIME!\n====================================")
       end
-      
+  
       return HttpService:JSONEncode(Embed_Data)
    end
    
@@ -166,23 +166,35 @@ if game.PlaceId == (5208655184) then
       Collecting_Tag.Name = "Collection"
       Collecting_Tag.Parent = Object
       
+      local ObjectPosition = Object.Position
+      
       repeat wait()
         if Client.Character then
            if Client.Character:FindFirstChild("HumanoidRootPart") then
               local HRP = Client.Character:FindFirstChild("HumanoidRootPart")
-              
-              SimulateTouch(Object, HRP)
+
+              firetouchinterest(Object, HRP, 0)
+              firetouchinterest(Object, HRP, 1)
            end
         end
       until Object.Parent ~= Thrown or Object == nil 
       
       local Embed,Sniped = '[content:"ERROR OCCURED!"]'
+      local Nearest = nil
+      
+      for i, v in pairs(Bankers) do
+         if v.HumanoidRootPart ~= nil then
+            local Check = DistanceCheck(Object, v.HumanoidRootPart, 150)
+            
+            Nearest = i
+         end
+      end
       
       if Client.Backpack:FindFirstChild(Item) then
-          Embed = CreateEmbed("SUCCESS", Client.Name, Item)
+          Embed = CreateEmbed("SUCCESS", Client.Name, Item, Nearest)
           Sniped = true
      else
-          Embed = CreateEmbed("ERROR", Client.Name, Item)
+          Embed = CreateEmbed("ERROR", Client.Name, Item, Nearest
           Sniped = false
       end
       
