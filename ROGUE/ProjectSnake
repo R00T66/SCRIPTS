@@ -226,7 +226,7 @@ if game.PlaceId == (5208655184) then
       
       for i, x in pairs(Thrown:GetChildren()) do
          local Success,Error = pcall(Function, i, x)
-         --if not Success then print("ERROR:", Error) end
+         if not Success then print("ERROR:", Error) end
       end
    end
    
