@@ -14,6 +14,7 @@ if game.PlaceId == (5208655184) then
    -- Locales
 
    local Client = Players.LocalPlayer
+   local Active = true
    
    local AssociatedBankerPart = nil
    local Thrown = Workspace:WaitForChild("Thrown")
@@ -215,7 +216,7 @@ if game.PlaceId == (5208655184) then
             local Valid = ValidAndSelected(x.BillboardGui.Tool.Text)
             local DCheck,Distance = DistanceCheck(x, AssociatedBankerPart, 150)
 
-            if Valid then
+            if Valid and Active then
                if DCheck then
                   LoadCharacter()
                   CollectItem(x, x.BillboardGui.Tool.Text)
@@ -305,10 +306,16 @@ if game.PlaceId == (5208655184) then
       return true
    end
    
+   local ToggleChat = function(self)
+      if self:lower() == "/e dance" then Active = not Active end
+      print("Enabled:", tostring(Active))
+   end
+   
    local SetupScript = function()
       if SetupGlobalSettings() ~= false then
          FindAssociatedBanker()
          RunService.Stepped:Connect(RunSnakerBot)
+         Client.Chatted:Connect(ToggleChat)
       end
    end
 
