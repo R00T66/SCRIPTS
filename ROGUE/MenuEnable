@@ -1,32 +1,37 @@
 repeat wait() until game.IsLoaded
 repeat wait() until game:GetService("Players").LocalPlayer
-
 local LeaderboardGui = game:GetService("StarterGui"):WaitForChild("LeaderboardGui"):Clone()
 local Scrolling = LeaderboardGui:WaitForChild("MainFrame"):WaitForChild("ScrollingFrame")
 local PlayerGui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
 local Menu = PlayerGui:WaitForChild("StartMenu", 30)
-
+local PlayerESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/R00T66/BIN/main/EL2/Kiriot22.lua"))()
+PlayerESP.Boxes = true
+PlayerESP.FaceCamera = true
+PlayerESP.Color = Color3.fromRGB(0, 255, 0)
+PlayerESP:Toggle(true)
 if Menu == nil then
    return
 end
-
 local MenuClient = Menu:WaitForChild("MenuClient")
 local CurrentSubject = nil
 local Viewing = false
-
-local SetCameraView = function(Character, Scriptable)
+local UpdateCamera = function()
    local Cam = workspace.CurrentCamera
-   if Scriptable then
-      MenuClient.Disabled = false
-      Cam.CameraType = Enum.CameraType.Scriptable
-      Cam.CameraSubject = CurrentSubject
-   elseif not Scriptable then
-      MenuClient.Disabled = true
-      Cam.CameraType = Enum.CameraType.Custom
-      Cam.CameraSubject = CurrentSubject
+   Cam.CameraType = "Scriptable"
+   Cam.CameraSubject = nil
+   Cam.CoordinateFrame = CFrame.Angles(0,math.pi/4,0)
+   Cam.Focus = Cam.CoordinateFrame-Vector3.new(0,Cam.CoordinateFrame.p.Y,0)
+end
+local SetCameraView = function(Spec)
+   local Cam = workspace.CurrentCamera
+   if Spec then
+       
+       Cam.CameraType = Enum.CameraType.Custom
+       Cam.CameraSubject = CurrentSubject
+   elseif not Spec then
+       UpdateCamera()
    end
 end
-
 local Connect_View = function(Label)
    local ClickButton = Instance.new("TextButton")
    ClickButton.Position = Label.Position
@@ -37,15 +42,15 @@ local Connect_View = function(Label)
    ClickButton.MouseButton1Down:Connect(function(...)
        local PlayerText = ClickButton.Parent.Text
        PlayerText = PlayerText:gsub("\226\128\142", "")
-
        if game:GetService("Players"):FindFirstChild(PlayerText) then
           local Player = game.Players:FindFirstChild(PlayerText)
-
           if Player.Character then
+             warn(CurrentSubject == Player.Character)
              if CurrentSubject ~= Player.Character then
                  Viewing = true
                  CurrentSubject = Player.Character
-             else
+             elseif CurrentSubject == Player.Character then
+                 Viewing = false
                  CurrentSubject = nil
              end
           else
@@ -58,25 +63,20 @@ local Connect_View = function(Label)
        end
    end)
 end
-
 local RunningServiceLol = function(...)
    if Viewing then
-       
       if CurrentSubject == nil then
           Viewing = false 
           CurrentSubject = nil 
       end
-      
-      SetCameraView(CurrentSubject, false)
+      SetCameraView(Viewing)
    elseif not Viewing then
-      SetCameraView(CurrentSubject, true)
+      SetCameraView(Viewing)
    end
+   LeaderboardGui.Enabled = true
 end
-
 Scrolling.ChildAdded:Connect(function(Child)
     Connect_View(Child)
 end)
-
 game:GetService("RunService").RenderStepped:Connect(RunningServiceLol)
-
 LeaderboardGui.Parent = PlayerGui
