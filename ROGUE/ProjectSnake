@@ -274,7 +274,7 @@ if game.PlaceId == (5208655184) then
                 
                 repeat wait()
                   LowGFX_Yield = LowGFX_Yield + 1
-                  UserSettings():GetService("UserGameSettings").MasterVolume = 0
+                  settings().Rendering.QualityLevel = "Level01"
                 until LowGFX_Yield > 99
             end)
             coroutine.resume(Thread)
