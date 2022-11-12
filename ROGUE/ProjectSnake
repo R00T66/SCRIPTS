@@ -278,7 +278,7 @@ if game.PlaceId == (5208655184) then
                 until LowGFX_Yield > 99
             end)
             coroutine.resume(Thread)
-            warn("Attempting LOW GFX")
+            warn("Attempting LOW GFX", "Level-01")
          end
          if _G.Settings["GameVolume"] ~= nil then
             local Thread = coroutine.create(function()
