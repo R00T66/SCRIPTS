@@ -1,37 +1,71 @@
 repeat wait() until game.IsLoaded
 repeat wait() until game:GetService("Players").LocalPlayer
+
 local LeaderboardGui = game:GetService("StarterGui"):WaitForChild("LeaderboardGui"):Clone()
 local Scrolling = LeaderboardGui:WaitForChild("MainFrame"):WaitForChild("ScrollingFrame")
 local PlayerGui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
 local Menu = PlayerGui:WaitForChild("StartMenu", 30)
+
 local PlayerESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/R00T66/BIN/main/EL2/Kiriot22.lua"))()
-PlayerESP.Boxes = true
+PlayerESP.Boxes = false
 PlayerESP.FaceCamera = true
 PlayerESP.Color = Color3.fromRGB(0, 255, 0)
 PlayerESP:Toggle(true)
+
 if Menu == nil then
    return
 end
+
 local MenuClient = Menu:WaitForChild("MenuClient")
 local CurrentSubject = nil
 local Viewing = false
+
+local GetCurrentPlacing = function()
+   if game:GetService("Players").LocalPlayer.Character then
+       return game:GetService("Players").LocalPlayer.Character
+   else
+       return workspace
+   end
+end
+
 local UpdateCamera = function()
    local Cam = workspace.CurrentCamera
-   Cam.CameraType = "Scriptable"
-   Cam.CameraSubject = nil
-   Cam.CoordinateFrame = CFrame.Angles(0,math.pi/4,0)
-   Cam.Focus = Cam.CoordinateFrame-Vector3.new(0,Cam.CoordinateFrame.p.Y,0)
+   local Pla = GetCurrentPlacing()
+   
+   if Pla == workspace then
+      Cam.CameraType = Enum.CameraType.Scriptable
+      Cam.CameraSubject = Pla
+   else
+      Cam.CameraType = Enum.CameraType.Custom
+      Cam.CameraSubject = Pla      
+   end
 end
+
 local SetCameraView = function(Spec)
    local Cam = workspace.CurrentCamera
    if Spec then
-       
        Cam.CameraType = Enum.CameraType.Custom
        Cam.CameraSubject = CurrentSubject
    elseif not Spec then
        UpdateCamera()
    end
 end
+
+local FixNames = function()
+   for z, v in pairs(game.Players:GetPlayers()) do
+       if v.Character then
+           for i, x in pairs(v.Character:GetDescendants()) do
+              if x.Name == "FakeHumanoid" then
+                 x.NameDisplayDistance = 35235325
+              end
+              if x.Name == "Humanoid" then
+                 x.NameDisplayDistance = 0
+              end
+           end
+       end
+   end
+end
+
 local Connect_View = function(Label)
    local ClickButton = Instance.new("TextButton")
    ClickButton.Position = Label.Position
@@ -45,7 +79,6 @@ local Connect_View = function(Label)
        if game:GetService("Players"):FindFirstChild(PlayerText) then
           local Player = game.Players:FindFirstChild(PlayerText)
           if Player.Character then
-             warn(CurrentSubject == Player.Character)
              if CurrentSubject ~= Player.Character then
                  Viewing = true
                  CurrentSubject = Player.Character
@@ -74,6 +107,7 @@ local RunningServiceLol = function(...)
       SetCameraView(Viewing)
    end
    LeaderboardGui.Enabled = true
+   FixNames()
 end
 Scrolling.ChildAdded:Connect(function(Child)
     Connect_View(Child)
