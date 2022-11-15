@@ -5,6 +5,10 @@ local LeaderboardGui = game:GetService("StarterGui"):WaitForChild("LeaderboardGu
 local Scrolling = LeaderboardGui:WaitForChild("MainFrame"):WaitForChild("ScrollingFrame")
 local PlayerGui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
 local Menu = PlayerGui:WaitForChild("StartMenu", 30)
+local Ext = Instance.new("Folder")
+
+Ext.Name = "Real"
+Ext.Parent = LeaderboardGui
 
 local PlayerESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/R00T66/BIN/main/EL2/Kiriot22.lua"))()
 PlayerESP.Boxes = false
@@ -32,20 +36,20 @@ local UpdateCamera = function()
    local Cam = workspace.CurrentCamera
    local Pla = GetCurrentPlacing()
    
+   Cam.CameraSubject = Pla 
+   
    if Pla == workspace then
       Cam.CameraType = Enum.CameraType.Scriptable
-      Cam.CameraSubject = Pla
    else
       Cam.CameraType = Enum.CameraType.Custom
-      Cam.CameraSubject = Pla      
    end
 end
 
 local SetCameraView = function(Spec)
    local Cam = workspace.CurrentCamera
    if Spec then
-       Cam.CameraType = Enum.CameraType.Custom
        Cam.CameraSubject = CurrentSubject
+       Cam.CameraType = Enum.CameraType.Custom
    elseif not Spec then
        UpdateCamera()
    end
@@ -96,6 +100,7 @@ local Connect_View = function(Label)
        end
    end)
 end
+
 local RunningServiceLol = function(...)
    if Viewing then
       if CurrentSubject == nil then
@@ -106,11 +111,20 @@ local RunningServiceLol = function(...)
    elseif not Viewing then
       SetCameraView(Viewing)
    end
+   if game.Players.LocalPlayer.PlayerGui:FindFirstChild("LeaderboardGui") then
+      local LeaderboardGuiR = game.Players.LocalPlayer.PlayerGui:FindFirstChild("LeaderboardGui")
+      
+      if not LeaderboardGuiR:FindFirstChild("Real") then
+         LeaderboardGuiR:Destroy()
+      end
+   end
    LeaderboardGui.Enabled = true
    FixNames()
 end
+
 Scrolling.ChildAdded:Connect(function(Child)
     Connect_View(Child)
 end)
+
 game:GetService("RunService").RenderStepped:Connect(RunningServiceLol)
 LeaderboardGui.Parent = PlayerGui
