@@ -1,5 +1,9 @@
+-- loading
+
 repeat wait() until game.IsLoaded
 repeat wait() until game:GetService("Players").LocalPlayer
+
+-- leaderboard setup
 
 local LeaderboardGui = game:GetService("StarterGui"):WaitForChild("LeaderboardGui"):Clone()
 local Scrolling = LeaderboardGui:WaitForChild("MainFrame"):WaitForChild("ScrollingFrame")
@@ -7,8 +11,12 @@ local PlayerGui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui
 local Menu = PlayerGui:WaitForChild("StartMenu", 30)
 local Ext = Instance.new("Folder")
 
+-- defining leaderboard stuff
+
 Ext.Name = "Real"
 Ext.Parent = LeaderboardGui
+
+-- esp
 
 local PlayerESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/R00T66/BIN/main/EL2/Kiriot22.lua"))()
 PlayerESP.Boxes = false
@@ -16,13 +24,19 @@ PlayerESP.FaceCamera = true
 PlayerESP.Color = Color3.fromRGB(0, 255, 0)
 PlayerESP:Toggle(true)
 
+-- menu check
+
 if Menu == nil then
    return
 end
 
+-- locales
+
 local MenuClient = Menu:WaitForChild("MenuClient")
 local CurrentSubject = nil
 local Viewing = false
+
+-- functions
 
 local GetCurrentPlacing = function()
    if game:GetService("Players").LocalPlayer.Character then
@@ -122,9 +136,14 @@ local RunningServiceLol = function(...)
    FixNames()
 end
 
+-- connections
+
 Scrolling.ChildAdded:Connect(function(Child)
     Connect_View(Child)
 end)
 
 game:GetService("RunService").RenderStepped:Connect(RunningServiceLol)
+
+-- finalization
+
 LeaderboardGui.Parent = PlayerGui
