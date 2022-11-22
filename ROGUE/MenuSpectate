@@ -77,7 +77,9 @@ local FixNames = function()
                  x.NameDisplayDistance = 35235325
               end
               if x.Name == "Humanoid" then
+                 x.DisplayDistanceType = "None"
                  x.NameDisplayDistance = 0
+                 x.DisplayName = ""
               end
            end
        end
